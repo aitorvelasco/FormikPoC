@@ -8,11 +8,11 @@ export default function TextFieldFormik<T>( {name, ...rest}: TextFieldFormikProp
         <Field name={name}>
             {({field, form}: FieldProps<string, T>) =>
                 <TextField
-                    name={name}
+                    name={field.name}
                     value={field.value}
                     onChange={field.onChange}
-                    error={getIn(form.errors, name) !== undefined && !!(getIn(form.touched, name))}
-                    helperText={<ErrorMessage name={name} />}
+                    error={getIn(form.errors, field.name) !== undefined && !!(getIn(form.touched, field.name))}
+                    helperText={<ErrorMessage name={field.name} />}
                     {...rest}
                 />
             }
