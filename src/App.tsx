@@ -1,19 +1,18 @@
 import { Formik, Form } from "formik"
-import { Button, Container, Stack, TextField, Typography } from '@mui/material'
+import { Button, Container, Stack, Typography } from '@mui/material'
 import * as yup from 'yup'
 import { useState } from "react"
-import PhoneField from "./fields/PhoneField"
-import NameField from "./fields/NameField"
-import LastNameField from "./fields/LastNameField"
-import EmailField from "./fields/EmailField"
+import TextFieldFormik from "./TextFieldFormik"
 
 
 const validationSchema1 = yup.object({
   name: yup
     .string()
+    .min(3, 'Minimo 3 caracteres')
     .required('Nombre obligatorio'),
   lastname: yup
     .string()
+    .min(3, 'Minimo 3 caracteres')
     .required('Apellido obligatorio'),
   phone: yup
     .string()
@@ -24,6 +23,7 @@ const validationSchema1 = yup.object({
 const validationSchema2 = yup.object({
   name: yup
     .string()
+    .min(3, 'Minimo 3 caracteres')
     .required('Nombre obligatorio'),
   phone: yup
     .string()
@@ -34,6 +34,13 @@ const validationSchema2 = yup.object({
   .email('Escribe un formato de correo correcto')
   .required('Correo obligatorio')
 })
+
+enum FieldName {
+  name = 'name',
+  lastname = 'lastname',
+  phone = 'phone',
+  email = 'email'
+}
 
 const FORM1_INITIAL_VALUES = {
   name: '',
@@ -46,6 +53,9 @@ const FORM2_INITIAL_VALUES = {
   phone: '',
   email: '',
 }
+
+const nameField = <TextFieldFormik name={FieldName.name} placeholder="Nombre" />
+const phoneField =  <TextFieldFormik name={FieldName.phone} placeholder="Teléfono" inputProps={{ maxLength: 9 }} />
 
 function App() {
   const [resultForm1, setResultForm1] = useState(FORM1_INITIAL_VALUES)
@@ -60,15 +70,15 @@ function App() {
         actions.resetForm()
       }}>
         {(formikProps) => (
-        <Form>
-          <Stack spacing={2}>
-            <NameField formikProps={formikProps} />
-            <LastNameField formikProps={formikProps} />
-            <PhoneField formikProps={formikProps} />
-            <Button variant="contained" type="submit">Enviar</Button>
-          </Stack>
-        </Form>
-    )}
+          <Form>
+            <Stack spacing={2}>
+              {nameField}
+              <TextFieldFormik name={FieldName.lastname} placeholder="Apellido" />
+              {phoneField}
+              <Button variant="contained" onClick={() => formikProps.handleSubmit()}>Enviar</Button>
+            </Stack>
+          </Form>
+        )}
     </Formik>
 
     <Typography variant="h5" align="center">{resultForm1.name} {resultForm1.lastname} {resultForm1.phone}</Typography>
@@ -81,14 +91,14 @@ function App() {
       }}>
         {(formikProps) => (
         <Form>
-          <Stack spacing={2}>
-            <NameField formikProps={formikProps} />
-            <PhoneField formikProps={formikProps} />
-            <EmailField formikProps={formikProps} />
-            <Button variant="contained" type="submit">Enviar</Button>
-          </Stack>
+            <Stack spacing={2}>
+              {nameField}
+              {phoneField}
+              <TextFieldFormik name={FieldName.email} placeholder="Correo electrónico" />
+              <Button variant="contained" onClick={() => formikProps.handleSubmit()}>Enviar</Button>
+            </Stack>
         </Form>
-    )}
+        )}
     </Formik>
 
     <Typography variant="h5" align="center">{resultForm2.name} {resultForm2.phone} {resultForm2.email}</Typography>
